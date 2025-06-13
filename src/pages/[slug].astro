@@ -1,0 +1,317 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+    const posts = await getCollection('news');
+    return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await post.render();
+
+const formatDate = (date: string | number | Date) => {
+    return new Date(date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+};
+---
+
+<Layout title={post.data.title}>
+    <main class="container">
+        <article class="article-content">
+            <header class="article-header">
+                <h1>{post.data.title}</h1>
+                <time class="article-date">{formatDate(post.data.date)}</time>
+                {post.data.description && <p class="article-description">{post.data.description}</p>}
+            </header>
+
+            <div class="content-wrapper">
+                <div class="article-body">
+                    <Content />
+                </div>
+
+                {headings.length > 0 && (
+                        <aside class="toc-sidebar">
+                            <nav class="toc">
+                                <h3>Contents</h3>
+                                <ul>
+                                    {headings.map((heading) => (
+                                            <li class={`toc-level-${heading.depth}`}>
+                                                <a href={`#${heading.slug}`}>{heading.text}</a>
+                                            </li>
+                                    ))}
+                                </ul>
+                            </nav>
+                        </aside>
+                )}
+            </div>
+        </article>
+    </main>
+</Layout>
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .article-header {
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+
+    .article-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    .article-date {
+        color: #6b7280;
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    .article-description {
+        font-size: 1.1rem;
+        color: #4b5563;
+        margin-top: 1rem;
+        font-weight: 400;
+    }
+
+    .content-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 280px;
+        gap: 4rem;
+        align-items: start;
+    }
+
+    .article-body {
+        max-width: none;
+        line-height: 1.7;
+        font-size: 1.1rem;
+        color: #374151;
+    }
+
+    .article-body :global(h2) {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin: 2.5rem 0 1rem 0;
+        color: #1f2937;
+    }
+
+    .article-body :global(h3) {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin: 2rem 0 1rem 0;
+        color: #374151;
+    }
+
+    .article-body :global(p) {
+        margin-bottom: 1.5rem;
+    }
+
+    .article-body :global(img) {
+        width: 100%;
+        height: auto;
+        border-radius: 8px;
+        margin: 2rem 0;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    .article-body :global(ul, ol) {
+        margin: 1.5rem 0;
+        padding-left: 1.5rem;
+    }
+
+    .article-body :global(li) {
+        margin-bottom: 0.5rem;
+    }
+
+    .article-body :global(blockquote) {
+        border-left: 4px solid #3b82f6;
+        padding-left: 1.5rem;
+        margin: 2rem 0;
+        font-style: italic;
+        color: #6b7280;
+    }
+
+    .article-body :global(code) {
+        background: #f3f4f6;
+        padding: 0.2rem 0.4rem;
+        border-radius: 4px;
+        font-size: 0.9em;
+        color: #ef4444;
+    }
+
+    .article-body :global(pre) {
+        background: #1f2937;
+        padding: 1.5rem;
+        border-radius: 8px;
+        overflow-x: auto;
+        margin: 2rem 0;
+    }
+
+    .article-body :global(pre code) {
+        background: none;
+        padding: 0;
+        color: #e5e7eb;
+    }
+
+    .article-body :global(h1, h2, h3, h4, h5, h6) {
+        scroll-margin-top: 6rem;
+    }
+
+    .article-body :global(.heading-link) {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .article-body :global(.heading-link:hover) {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .toc-sidebar {
+        position: sticky;
+        top: 2rem;
+        height: fit-content;
+    }
+
+    .toc {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 1.5rem;
+    }
+
+    .toc h3 {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #374151;
+        margin: 0 0 1rem 0;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .toc ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .toc li {
+        margin: 0;
+    }
+
+    .toc a {
+        display: block;
+        padding: 0.4rem 0;
+        color: #6b7280;
+        text-decoration: none;
+        font-size: 0.9rem;
+        border-left: 2px solid transparent;
+        padding-left: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .toc a:hover {
+        color: #3b82f6;
+        border-left-color: #3b82f6;
+    }
+
+    .toc a.active {
+        color: #1d4ed8;
+        font-weight: 600;
+        border-left-color: #1d4ed8;
+        background: rgba(59, 130, 246, 0.05);
+    }
+
+    .toc-level-2 {
+        margin-left: 0;
+    }
+
+    .toc-level-3 {
+        margin-left: 1rem;
+    }
+
+    .toc-level-4 {
+        margin-left: 2rem;
+    }
+
+    @media (max-width: 1024px) {
+        .content-wrapper {
+            grid-template-columns: 1fr;
+            gap: 2rem;
+        }
+
+        .toc-sidebar {
+            order: -1;
+            position: static;
+        }
+
+        .toc {
+            margin-bottom: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .container {
+            padding: 1rem;
+        }
+
+        .article-header h1 {
+            font-size: 2rem;
+        }
+
+        .article-body {
+            font-size: 1rem;
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const tocLinks = document.querySelectorAll('.toc a');
+
+        tocLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href');
+                const targetElement = targetId ? document.querySelector(targetId) : null;
+
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const id = entry.target.getAttribute('id');
+                const tocLink = document.querySelector(`.toc a[href="#${id}"]`);
+
+                if (entry.isIntersecting) {
+                    document.querySelectorAll('.toc a').forEach(link => link.classList.remove('active'));
+                    tocLink?.classList.add('active');
+                }
+            });
+        }, { rootMargin: '-20% 0% -35% 0%' });
+
+        document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
+            if (heading.id) observer.observe(heading);
+        });
+    });
+</script>
