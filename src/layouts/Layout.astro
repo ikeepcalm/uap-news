@@ -13,13 +13,17 @@ const { title, description = "Новини | UAProject" } = Astro.props;
     <meta charset="UTF-8" />
     <meta name="description" content={description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/logo.webp" />
     <meta name="generator" content={Astro.generator} />
 
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="article" />
+    <meta property="og:image" content="/og-image.png" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content="/og-image.png" />
 
     <title>{title}</title>
 
@@ -31,8 +35,8 @@ const { title, description = "Новини | UAProject" } = Astro.props;
 <header class="site-header">
     <div class="header-container">
         <a href="/" class="site-title">
-            <span class="server-icon">⚡</span>
-            Новини UAProject
+            <img src="/logo.webp" alt="Server Logo" class="site-logo">
+            Новини
         </a>
         <nav class="site-nav">
             <a href="/">На головну</a>
@@ -104,8 +108,9 @@ const { title, description = "Новини | UAProject" } = Astro.props;
         gap: 0.5rem;
     }
 
-    .server-icon {
-        font-size: 1.8rem;
+    .site-logo {
+        height: 2rem;
+        width: auto;
     }
 
     .site-nav {

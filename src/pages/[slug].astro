@@ -22,7 +22,7 @@ const formatDate = (date: string | number | Date) => {
 };
 ---
 
-<Layout title={post.data.title}>
+<Layout title={post.data.title} description={post.data.description}>
     <main class="container">
         <article class="article-content">
             <header class="article-header">
@@ -54,6 +54,7 @@ const formatDate = (date: string | number | Date) => {
         </article>
     </main>
 </Layout>
+
 
 <style>
     .container {
