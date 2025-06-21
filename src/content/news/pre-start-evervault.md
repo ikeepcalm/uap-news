@@ -1,7 +1,7 @@
 ---
 title: "Evervault: додаткова інформація"
 description: "Деталі анонсу нового серверного світу Evervault, відповіді на можливі запитання стосовно бета-тестування, особливості та правила гри."
-date: 2025-06-16
+date: 2025-06-21
 author: "ikeepcalm"
 featured: true
 tags: ["evervault", "beta"]
